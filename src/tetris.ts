@@ -9,7 +9,7 @@ export class Tetris{
     public cursor!: Piece;
     public board!: GameBoard;
     public control!: GameControl;
-    public logic!: GameLogic
+    public logic!: GameLogic;
 
     private logicInverval: number;
 

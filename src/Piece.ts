@@ -36,4 +36,5 @@ export class Piece{
     setBlocks(blocks: number[][]){
         this.blocks = blocks;
     }
+
 }

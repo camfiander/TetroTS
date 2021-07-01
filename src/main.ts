@@ -1,12 +1,15 @@
 import './style.css'
 import * as Shared from './Shared';
 import { Tetris } from './tetris';
+import { getTetrominoColors } from './tetrominos';
   
 const app = document.querySelector<HTMLDivElement>('#app')!
 
 const game = document.querySelector<HTMLCanvasElement>('#game');
 
 const tetris = new Tetris();
+
+let shadowOffset: number = 0;
 
 if(game){
   const ctx = game.getContext('2d');
@@ -23,7 +26,18 @@ if(game){
           }
         }
       }
+      updateShadow();
+      ctx.fillStyle = '#b0b0b0';
 
+      for(let y = 0; y < tetris.cursor.blocks.length; y++){
+        for(let x = 0; x < tetris.cursor.blocks[0].length; x++){
+          if(tetris.cursor.blocks[y][x] !== 0){
+            ctx.fillRect(((x+tetris.cursor.origin[1])*32)+1,((y+tetris.cursor.origin[0]+shadowOffset)*32)+1,30,30);
+          }
+        }
+      }
+
+      ctx.fillStyle = getTetrominoColors(tetris.cursor.shape);
       for(let y = 0; y < tetris.cursor.blocks.length; y++){
         for(let x = 0; x < tetris.cursor.blocks[0].length; x++){
           if(tetris.cursor.blocks[y][x] !== 0){
@@ -34,6 +48,14 @@ if(game){
 
     },33);
   }
+}
+
+function updateShadow(){
+  let offset = 0;
+  while(tetris.board.isEmpty(tetris.cursor.blocks,tetris.cursor.origin[0]+1+offset,tetris.cursor.origin[1])){
+    offset++;
+  }
+  shadowOffset = offset;
 }
 
 document.addEventListener('keydown', (e) => {
