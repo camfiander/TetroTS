@@ -44,6 +44,16 @@ export class Control implements GameControl {
   inputLeft() {
     this.left = true;
     this.moveLeft();
+    this.setDAS();
+  }
+
+  inputRight() {
+    this.right = true;
+    this.moveRight();
+    this.setDAS();
+  }
+
+  private setDAS() {
     if (this.dasTimeout === 0) {
       this.dasTimeout = setTimeout(
         (x: GameControl) => {
@@ -65,11 +75,6 @@ export class Control implements GameControl {
         this
       );
     }
-  }
-
-  inputRight() {
-    this.right = true;
-    this.moveRight();
   }
 
   releaseLeft() {
