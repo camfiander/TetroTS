@@ -3,61 +3,69 @@ import * as Shared from "./Shared";
 import { Tetris } from "./tetris";
 import { getTetrominoColors } from "./tetrominos";
 
-const app = document.querySelector<HTMLDivElement>("#app")!;
-
-const game = document.querySelector<HTMLCanvasElement>("#game");
+const game = document.querySelector<HTMLCanvasElement>("#game")!;
 
 const tetris = new Tetris();
 
 let shadowOffset: number = 0;
 
-if (game) {
-  const ctx = game.getContext("2d");
-  if (ctx) {
-    const drawLoop = setInterval(() => {
-      ctx.fillStyle = "black";
-      ctx.fillRect(0, 0, 320, 768);
-      ctx.fillStyle = "white";
+const ctx = game.getContext("2d")!;
 
-      for (let y = 0; y < 24; y++) {
-        for (let x = 0; x < 10; x++) {
-          if (tetris.board.blocks[y][x] !== 0) {
-            ctx.fillRect(x * 32 + 1, y * 32 + 1, 30, 30);
-          }
-        }
-      }
-      updateShadow();
-      ctx.fillStyle = "#b0b0b0";
+const scoreDiv: HTMLElement = document.querySelector("#score")!;
 
-      for (let y = 0; y < tetris.cursor.blocks.length; y++) {
-        for (let x = 0; x < tetris.cursor.blocks[0].length; x++) {
-          if (tetris.cursor.blocks[y][x] !== 0) {
-            ctx.fillRect(
-              (x + tetris.cursor.origin[1]) * 32 + 1,
-              (y + tetris.cursor.origin[0] + shadowOffset) * 32 + 1,
-              30,
-              30
-            );
-          }
-        }
-      }
+const drawLoop = setInterval(() => {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, 320, 768);
+  //ctx.fillRect(320, 0, 320, 240);
 
-      ctx.fillStyle = getTetrominoColors(tetris.cursor.shape);
-      for (let y = 0; y < tetris.cursor.blocks.length; y++) {
-        for (let x = 0; x < tetris.cursor.blocks[0].length; x++) {
-          if (tetris.cursor.blocks[y][x] !== 0) {
-            ctx.fillRect(
-              (x + tetris.cursor.origin[1]) * 32 + 1,
-              (y + tetris.cursor.origin[0]) * 32 + 1,
-              30,
-              30
-            );
-          }
-        }
+  //Draw next piece
+
+  ctx.fillStyle = "white";
+
+  //Draw static board
+  for (let y = 0; y < 24; y++) {
+    for (let x = 0; x < 10; x++) {
+      if (tetris.board.blocks[y][x] !== 0) {
+        ctx.fillRect(x * 32 + 1, y * 32 + 1, 30, 30);
       }
-    }, 33);
+    }
   }
-}
+
+  //Draw Shadow
+  updateShadow();
+  ctx.fillStyle = "#b0b0b0";
+
+  for (let y = 0; y < tetris.cursor.blocks.length; y++) {
+    for (let x = 0; x < tetris.cursor.blocks[0].length; x++) {
+      if (tetris.cursor.blocks[y][x] !== 0) {
+        ctx.fillRect(
+          (x + tetris.cursor.origin[1]) * 32 + 1,
+          (y + tetris.cursor.origin[0] + shadowOffset) * 32 + 1,
+          30,
+          30
+        );
+      }
+    }
+  }
+
+  //Draw Falling Block
+  ctx.fillStyle = getTetrominoColors(tetris.cursor.shape);
+  for (let y = 0; y < tetris.cursor.blocks.length; y++) {
+    for (let x = 0; x < tetris.cursor.blocks[0].length; x++) {
+      if (tetris.cursor.blocks[y][x] !== 0) {
+        ctx.fillRect(
+          (x + tetris.cursor.origin[1]) * 32 + 1,
+          (y + tetris.cursor.origin[0]) * 32 + 1,
+          30,
+          30
+        );
+      }
+    }
+  }
+
+  //Draw score
+  scoreDiv.innerHTML = tetris.score.toString();
+}, 33);
 
 function updateShadow() {
   let offset = 0;

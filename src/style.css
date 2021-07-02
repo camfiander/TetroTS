@@ -7,7 +7,23 @@
   margin-top: 60px;
 }
 
-/* canvas{
-  width:320px;
-  height:768px;
-} */
+body {
+  background-color: #303030;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #53a9b1;
+  display:flex;
+  flex-direction: row;
+}
+
+div {
+  margin-left: 1rem;
+  text-align: center;
+  font-size: 32px;
+}
+
+#score {
+  font-size: 100px;
+  font-weight: bold;
+}

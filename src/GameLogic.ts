@@ -5,16 +5,19 @@ import * as Shared from "./Shared";
 export interface GameLogic {
   cursor: Piece;
   board: GameBoard;
+  score: number;
   tick: () => void;
 }
 
 export class Logic implements GameLogic {
   cursor: Piece;
   board: GameBoard;
+  score: number;
 
   constructor(cursor: Piece, board: GameBoard) {
     this.cursor = cursor;
     this.board = board;
+    this.score = 0;
   }
 
   tick() {
@@ -30,7 +33,7 @@ export class Logic implements GameLogic {
     } else {
       this.board.add(this.cursor);
       this.cursor.reset();
-      this.board.clearLines();
+      this.score += this.board.clearLines();
     }
   }
 }

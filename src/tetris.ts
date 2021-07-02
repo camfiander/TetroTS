@@ -10,6 +10,7 @@ export class Tetris {
   public board!: GameBoard;
   public control!: GameControl;
   public logic!: GameLogic;
+  public score: number;
 
   private logicInverval: number;
 
@@ -18,10 +19,11 @@ export class Tetris {
     this.board = new Board();
     this.logic = new Logic(cursor, this.board);
     this.control = new Control(cursor, this.board, this.logic);
-
+    this.score = 0;
     this.logicInverval = setInterval(
       (x: GameLogic) => {
         x.tick();
+        this.score = x.score;
       },
       180,
       this.logic
@@ -36,6 +38,7 @@ export class Tetris {
     this.logicInverval = setInterval(
       (x: GameLogic) => {
         x.tick();
+        this.score = x.score;
       },
       speed,
       this.logic
