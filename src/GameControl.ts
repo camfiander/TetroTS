@@ -7,12 +7,21 @@ import { GameLogic } from "./GameLogic";
 export interface GameControl {
   cursor: Piece;
   board: GameBoard;
+  left: boolean;
+  right: boolean;
   moveLeft: () => void;
   moveRight: () => void;
   rotate90: () => void;
   rotate90CCW: () => void;
   hardDrop: () => void;
   softDrop: (dropping: boolean) => void;
+  resetDAS: () => void;
+  releaseLeft: () => void;
+  releaseRight: () => void;
+  inputLeft: () => void;
+  inputRight: () => void;
+  dasInterval: number;
+  dasTimeout: number;
 }
 
 export class Control implements GameControl {
@@ -20,13 +29,68 @@ export class Control implements GameControl {
   board: GameBoard;
   logic: GameLogic;
 
-  softdropInterval: any;
+  dasInterval: number = 0;
+
+  dasTimeout: number = 0;
+
+  left: boolean = false;
+  right: boolean = false;
 
   constructor(cursor: Piece, board: GameBoard, logic: GameLogic) {
     this.cursor = cursor;
     this.board = board;
     this.logic = logic;
-    // this.softdropInterval = setInterval()
+  }
+  inputLeft() {
+    this.left = true;
+    this.moveLeft();
+    if (this.dasTimeout === 0) {
+      this.dasTimeout = setTimeout(
+        (x: GameControl) => {
+          if (x.dasInterval === 0) {
+            x.dasInterval = setInterval(
+              (x: GameControl) => {
+                if (x.left) {
+                  x.moveLeft();
+                } else if (x.right) {
+                  x.moveRight();
+                }
+              },
+              50,
+              x
+            );
+          }
+        },
+        200,
+        this
+      );
+    }
+  }
+
+  inputRight() {
+    this.right = true;
+    this.moveRight();
+  }
+
+  releaseLeft() {
+    this.left = false;
+    if (!this.right) {
+      this.resetDAS();
+    }
+  }
+
+  releaseRight() {
+    this.right = false;
+    if (!this.left) {
+      this.resetDAS();
+    }
+  }
+
+  resetDAS() {
+    clearInterval(this.dasInterval);
+    clearTimeout(this.dasTimeout);
+    this.dasInterval = 0;
+    this.dasTimeout = 0;
   }
 
   moveLeft() {

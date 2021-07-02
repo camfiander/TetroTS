@@ -3,6 +3,7 @@ import { getTetrominoBlocks } from "./tetrominos";
 
 export class Piece {
   shape: Tetromino;
+  next: Tetromino;
   // color: number;
   rotation: PieceRotation;
   blocks: number[][];
@@ -14,6 +15,8 @@ export class Piece {
     } else {
       this.shape = shape;
     }
+    this.next = tetr[Math.floor(Math.random() * 7)];
+
     // this.color = getTetrominoColor(shape);
     this.rotation = 0;
     this.blocks = getTetrominoBlocks(this.shape);
@@ -22,10 +25,11 @@ export class Piece {
 
   reset(shape?: Tetromino) {
     console.log("reset");
+    this.shape = this.next;
     if (shape === undefined) {
-      this.shape = tetr[Math.floor(Math.random() * 7)];
+      this.next = tetr[Math.floor(Math.random() * 7)];
     } else {
-      this.shape = shape;
+      this.next = shape;
     }
     // this.color = getTetrominoColor(shape);
     this.rotation = 0;

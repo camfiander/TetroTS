@@ -1,24 +1,38 @@
 import "./style.css";
 import * as Shared from "./Shared";
 import { Tetris } from "./tetris";
-import { getTetrominoColors } from "./tetrominos";
+import { getTetrominoBlocks, getTetrominoColors } from "./tetrominos";
+import { Piece } from "./Piece";
 
 const game = document.querySelector<HTMLCanvasElement>("#game")!;
 
 const tetris = new Tetris();
+const nextPiece = new Piece(tetris.cursor.next);
+nextPiece.origin[0] = 1;
+nextPiece.origin[1] = 11;
 
 let shadowOffset: number = 0;
 
 const ctx = game.getContext("2d")!;
 
 const scoreDiv: HTMLElement = document.querySelector("#score")!;
+const leftDiv: HTMLElement = document.querySelector("#leftInput")!;
+const rightDiv: HTMLElement = document.querySelector("#rightInput")!;
 
 const drawLoop = setInterval(() => {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, 320, 768);
-  //ctx.fillRect(320, 0, 320, 240);
 
-  //Draw next piece
+  // Draw next piece
+  if (nextPiece.shape !== tetris.cursor.next) {
+    nextPiece.shape = tetris.cursor.next;
+    nextPiece.setBlocks(getTetrominoBlocks(nextPiece.shape));
+
+    ctx.fillStyle = "#D0D0D0";
+    ctx.fillRect(320, 0, 320, 240);
+
+    drawPiece(nextPiece, getTetrominoColors(nextPiece.shape));
+  }
 
   ctx.fillStyle = "white";
 
@@ -48,23 +62,15 @@ const drawLoop = setInterval(() => {
     }
   }
 
-  //Draw Falling Block
-  ctx.fillStyle = getTetrominoColors(tetris.cursor.shape);
-  for (let y = 0; y < tetris.cursor.blocks.length; y++) {
-    for (let x = 0; x < tetris.cursor.blocks[0].length; x++) {
-      if (tetris.cursor.blocks[y][x] !== 0) {
-        ctx.fillRect(
-          (x + tetris.cursor.origin[1]) * 32 + 1,
-          (y + tetris.cursor.origin[0]) * 32 + 1,
-          30,
-          30
-        );
-      }
-    }
-  }
+  drawPiece(tetris.cursor, "#b0b0b0", shadowOffset);
+
+  drawPiece(tetris.cursor, getTetrominoColors(tetris.cursor.shape));
 
   //Draw score
   scoreDiv.innerHTML = tetris.score.toString();
+
+  leftDiv.innerHTML = tetris.control.left ? "LEFT" : "X";
+  rightDiv.innerHTML = tetris.control.right ? "RIGHT" : "X";
 }, 33);
 
 function updateShadow() {
@@ -81,6 +87,25 @@ function updateShadow() {
   shadowOffset = offset;
 }
 
+function drawPiece(p: Piece, fillStyle?: string, offset?: number) {
+  if (fillStyle !== undefined) {
+    ctx.fillStyle = fillStyle;
+  }
+
+  for (let y = 0; y < p.blocks.length; y++) {
+    for (let x = 0; x < p.blocks[0].length; x++) {
+      if (p.blocks[y][x] !== 0) {
+        ctx.fillRect(
+          (x + p.origin[1]) * 32 + 1,
+          (y + p.origin[0] + (offset === undefined ? 0 : offset)) * 32 + 1,
+          30,
+          30
+        );
+      }
+    }
+  }
+}
+
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey) {
     return;
@@ -88,10 +113,10 @@ document.addEventListener("keydown", (e) => {
 
   switch (e.key) {
     case "a":
-      tetris.control.moveLeft();
+      tetris.control.inputLeft();
       break;
     case "d":
-      tetris.control.moveRight();
+      tetris.control.inputRight();
       break;
     case "o":
       tetris.control.rotate90CCW();
@@ -111,5 +136,11 @@ document.addEventListener("keyup", (e) => {
   switch (e.key) {
     case "s":
       tetris.setSoftDrop(false);
+      break;
+    case "a":
+      tetris.control.releaseLeft();
+      break;
+    case "d":
+      tetris.control.releaseRight();
   }
 });
