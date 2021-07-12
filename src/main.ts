@@ -1,5 +1,4 @@
 import "./style.css";
-import * as Shared from "./Shared";
 import { Tetris } from "./tetris";
 import { getTetrominoBlocks, getTetrominoColors } from "./tetrominos";
 import { Piece } from "./Piece";
@@ -16,8 +15,6 @@ let shadowOffset: number = 0;
 const ctx = game.getContext("2d")!;
 
 const scoreDiv: HTMLElement = document.querySelector("#score")!;
-const leftDiv: HTMLElement = document.querySelector("#leftInput")!;
-const rightDiv: HTMLElement = document.querySelector("#rightInput")!;
 
 const drawLoop = setInterval(() => {
   ctx.fillStyle = "black";
@@ -28,18 +25,17 @@ const drawLoop = setInterval(() => {
     nextPiece.shape = tetris.cursor.next;
     nextPiece.setBlocks(getTetrominoBlocks(nextPiece.shape));
 
-    ctx.fillStyle = "#D0D0D0";
+    ctx.fillStyle = "#303030";
     ctx.fillRect(320, 0, 320, 240);
 
     drawPiece(nextPiece, getTetrominoColors(nextPiece.shape));
   }
 
-  ctx.fillStyle = "white";
-
   //Draw static board
   for (let y = 0; y < 24; y++) {
     for (let x = 0; x < 10; x++) {
       if (tetris.board.blocks[y][x] !== 0) {
+        ctx.fillStyle = "#" + tetris.board.blocks[y][x].toString(16);
         ctx.fillRect(x * 32 + 1, y * 32 + 1, 30, 30);
       }
     }
@@ -68,9 +64,6 @@ const drawLoop = setInterval(() => {
 
   //Draw score
   scoreDiv.innerHTML = tetris.score.toString();
-
-  leftDiv.innerHTML = tetris.control.left ? "LEFT" : "X";
-  rightDiv.innerHTML = tetris.control.right ? "RIGHT" : "X";
 }, 33);
 
 function updateShadow() {

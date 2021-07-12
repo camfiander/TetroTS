@@ -1,10 +1,10 @@
 import { Tetromino, PieceRotation, tetr } from "./Shared";
-import { getTetrominoBlocks } from "./tetrominos";
+import { getTetrominoBlocks, getTetrominoColorsHex } from "./tetrominos";
 
 export class Piece {
   shape: Tetromino;
   next: Tetromino;
-  // color: number;
+  color: number;
   rotation: PieceRotation;
   blocks: number[][];
   origin: number[];
@@ -17,7 +17,7 @@ export class Piece {
     }
     this.next = tetr[Math.floor(Math.random() * 7)];
 
-    // this.color = getTetrominoColor(shape);
+    this.color = getTetrominoColorsHex(this.shape);
     this.rotation = 0;
     this.blocks = getTetrominoBlocks(this.shape);
     this.origin = [0, 3];
@@ -31,7 +31,7 @@ export class Piece {
     } else {
       this.next = shape;
     }
-    // this.color = getTetrominoColor(shape);
+    this.color = getTetrominoColorsHex(this.shape);
     this.rotation = 0;
     this.blocks = getTetrominoBlocks(this.shape);
     this.origin = [0, 3];

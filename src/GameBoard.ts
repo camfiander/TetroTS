@@ -59,22 +59,22 @@ export class Board implements GameBoard {
   }
 
   add(p: Piece) {
-    console.log("ADD");
+    console.log("ADD: " + p.color.toString(16));
     let rowOffset = p.origin[0];
     let offset = p.origin[1];
 
     for (let i = 0; i < p.blocks.length; i++) {
-      this.addRow(p.blocks[i], rowOffset + i, offset);
+      this.addRow(p.blocks[i], rowOffset + i, offset, p.color);
     }
   }
 
-  addRow(x: number[], rowIdx: number, offset: number) {
+  addRow(x: number[], rowIdx: number, offset: number, color: number) {
     if (rowIdx >= Shared.NUM_ROWS) {
       return;
     }
     for (let i = 0; i < x.length && i + offset < Shared.NUM_COLS; i++) {
       if (i + offset >= 0) {
-        this.blocks[rowIdx][i + offset] |= x[i];
+        this.blocks[rowIdx][i + offset] |= x[i] * color;
       }
     }
   }
