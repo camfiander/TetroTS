@@ -1,4 +1,3 @@
-import * as Shared from "./Shared";
 import { PieceRotation } from "./Shared";
 import { GameBoard } from "./GameBoard";
 import { Piece } from "./Piece";

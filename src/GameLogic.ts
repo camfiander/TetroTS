@@ -1,6 +1,5 @@
 import { GameBoard } from "./GameBoard";
 import { Piece } from "./Piece";
-import * as Shared from "./Shared";
 
 export interface GameLogic {
   cursor: Piece;
